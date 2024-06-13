@@ -1,0 +1,40 @@
+{% extends "reservations/base_generic.html" %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+  <h1>Sign Up</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Sign Up</button>
+  </form>
+
+  <!-- Modal -->
+  <div class="modal fade" id="registrationSuccessModal" tabindex="-1" role="dialog" aria-labelledby="registrationSuccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="registrationSuccessModalLabel">Registration Successful</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Your registration was successful!
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if registration_successful %}
+  <script>
+    $(document).ready(function() {
+      $('#registrationSuccessModal').modal('show');
+    });
+  </script>
+  {% endif %}
+{% endblock %}

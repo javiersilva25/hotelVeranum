@@ -1,0 +1,28 @@
+{% extends "reservations/base_generic.html" %}
+
+{% block content %}
+  <h1>Lista de Huéspedes</h1>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nombres</th>
+        <th>Apellido</th>
+        <th>Email</th>
+        <th>Teléfono</th>
+        <th>Dirección</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for guest in guests %}
+      <tr>
+        <td>{{ guest.first_name }}</td>
+        <td>{{ guest.last_name }}</td>
+        <td>{{ guest.email }}</td>
+        <td>{{ guest.phone_number }}</td>
+        <td>{{ guest.address }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <a href="{% url 'create_guest' %}" class="btn btn-primary">Agregar un nuevo huésped</a>
+{% endblock %}

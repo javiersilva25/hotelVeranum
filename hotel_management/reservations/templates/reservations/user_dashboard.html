@@ -1,0 +1,28 @@
+{% extends "reservations/base_generic.html" %}
+
+{% block title %}User Dashboard{% endblock %}
+
+{% block content %}
+  <h1>Welcome {{ user.username }}</h1>
+  <h2>Available Rooms</h2>
+  <form method="post" action="{% url 'create_reservation' %}">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="room">Room:</label>
+      <select name="room" id="room" class="form-control">
+        {% for room in rooms %}
+          <option value="{{ room.id }}">{{ room.room_number }} - {{ room.room_type }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="check_in_date">Check-in Date:</label>
+      <input type="date" name="check_in_date" id="check_in_date" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="check_out_date">Check-out Date:</label>
+      <input type="date" name="check_out_date" id="check_out_date" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary">Request Reservation</button>
+  </form>
+{% endblock %}

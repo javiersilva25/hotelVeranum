@@ -1,0 +1,30 @@
+{% extends "reservations/base_generic.html" %}
+
+{% block title %}Room List{% endblock %}
+
+{% block content %}
+  <h1>Room List</h1>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Room Number</th>
+        <th>Room Type</th>
+        <th>Description</th>
+        <th>Price per Night</th>
+        <th>Available</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for room in rooms %}
+      <tr>
+        <td>{{ room.room_number }}</td>
+        <td>{{ room.room_type }}</td>
+        <td>{{ room.description }}</td>
+        <td>{{ room.price_per_night }}</td>
+        <td>{{ room.available }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <a href="{% url 'create_room' %}" class="btn btn-primary">Agregar una nueva habitación</a>
+{% endblock %}
