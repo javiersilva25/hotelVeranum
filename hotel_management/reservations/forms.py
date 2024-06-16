@@ -8,18 +8,18 @@ class GuestForm(forms.ModelForm):
         model = Guest
         fields = ['first_name', 'last_name', 'email', 'phone_number', 'address']
         widgets = {
-            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control'}),
-            'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
-            'address': forms.Textarea(attrs={'class': 'form-control'}),
+            'Nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'Apellido': forms.TextInput(attrs={'class': 'form-control'}),
+            'Correo': forms.EmailInput(attrs={'class': 'form-control'}),
+            'Telefono': forms.TextInput(attrs={'class': 'form-control'}),
+            'direccion': forms.Textarea(attrs={'class': 'form-control'}),
         }
         help_texts = {
-            'first_name': 'Enter the first name.',
-            'last_name': 'Enter the last name.',
-            'email': 'Enter a valid email address.',
-            'phone_number': 'Enter a valid phone number.',
-            'address': 'Enter the address (optional).',
+            'first_name': 'Ingresa tu nombre',
+            'last_name': 'Ingresa tu apellido',
+            'email': 'Ingresa tu correo',
+            'phone_number': 'Ingresa un número de teléfono válido',
+            'address': 'Ingresa tu dirección',
         }
 
 class ReservationForm(forms.ModelForm):
@@ -32,9 +32,9 @@ class ReservationForm(forms.ModelForm):
             'check_out_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
         }
         help_texts = {
-            'room': 'Select the room.',
-            'check_in_date': 'Select the check-in date.',
-            'check_out_date': 'Select the check-out date.',
+            'room': 'Selecciona la pieza',
+            'check_in_date': 'Selecciona fecha de inicio de tu reserva',
+            'check_out_date': 'Selecciona fecha de fin de tu reserva',
         }
 
 class SignUpForm(UserCreationForm):
