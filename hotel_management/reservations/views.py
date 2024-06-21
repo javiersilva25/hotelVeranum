@@ -3,23 +3,31 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
+from django.utils.translation import gettext as _
 from .models import Guest, Reservation, Room
 from .forms import GuestForm, ReservationForm, RoomForm, SignUpForm
 
 def index(request):
+    """
+    Renderiza la página de inicio.
+    """
     return render(request, 'reservations/index.html')
 
 @login_required
 @permission_required('reservations.add_guest', raise_exception=True)
 def create_guest(request):
+    """
+    Maneja la creación de un nuevo huésped.
+    Solo accesible por usuarios con permisos de administrador.
+    """
     if request.method == 'POST':
         form = GuestForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Guest created successfully.')
+            messages.success(request, _('Huésped creado con éxito.'))
             return redirect('guest_list')
         else:
-            messages.error(request, 'Please correct the error below.')
+            messages.error(request, _('Por favor, corrige el error a continuación.'))
     else:
         form = GuestForm()
     return render(request, 'reservations/guest_form.html', {'form': form})
@@ -27,26 +35,34 @@ def create_guest(request):
 @login_required
 @permission_required('reservations.view_guest', raise_exception=True)
 def guest_list(request):
+    """
+    Muestra una lista de todos los huéspedes.
+    Solo accesible por usuarios con permisos de administrador.
+    """
     guests = Guest.objects.all()
     return render(request, 'reservations/guest_list.html', {'guests': guests})
 
 @login_required
 def create_reservation(request):
+    """
+    Maneja la creación de una nueva reserva.
+    Asigna el usuario actual como el huésped asociado a la reserva.
+    """
     if request.method == 'POST':
         form = ReservationForm(request.POST)
         if form.is_valid():
             reservation = form.save(commit=False)
             if not hasattr(request.user, 'guest'):
-                messages.error(request, 'You need to create a guest profile first.')
+                messages.error(request, _('Primero necesitas crear un perfil de huésped.'))
                 return redirect('create_guest')
             reservation.guest = request.user.guest  # Asignar el usuario actual como invitado
             room_id = request.POST.get('room')  # Obtener el ID de la habitación seleccionada
             reservation.room = get_object_or_404(Room, id=room_id)  # Asignar la habitación correcta
             reservation.save()
-            messages.success(request, 'Reservation created successfully.')
+            messages.success(request, _('Reserva creada con éxito.'))
             return redirect('user_dashboard')
         else:
-            messages.error(request, 'Please correct the error below.')
+            messages.error(request, _('Por favor, corrige el error a continuación.'))
     else:
         form = ReservationForm()
     return render(request, 'reservations/reservation_form.html', {'form': form})
@@ -54,25 +70,36 @@ def create_reservation(request):
 @login_required
 @permission_required('reservations.view_reservation', raise_exception=True)
 def reservation_list(request):
+    """
+    Muestra una lista de todas las reservas.
+    Solo accesible por usuarios con permisos de administrador.
+    """
     reservations = Reservation.objects.all()
     return render(request, 'reservations/reservation_list.html', {'reservations': reservations})
 
 @login_required
 def user_reservations(request):
+    """
+    Muestra una lista de reservas del usuario actual.
+    """
     reservations = Reservation.objects.filter(guest=request.user.guest)
     return render(request, 'reservations/user_reservations.html', {'reservations': reservations})
 
 @login_required
 @permission_required('reservations.add_room', raise_exception=True)
 def create_room(request):
+    """
+    Maneja la creación de una nueva habitación.
+    Solo accesible por usuarios con permisos de administrador.
+    """
     if request.method == 'POST':
         form = RoomForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Room created successfully.')
+            messages.success(request, _('Habitación creada con éxito.'))
             return redirect('room_list')
         else:
-            messages.error(request, 'Please correct the error below.')
+            messages.error(request, _('Por favor, corrige el error a continuación.'))
     else:
         form = RoomForm()
     return render(request, 'reservations/room_form.html', {'form': form})
@@ -80,15 +107,21 @@ def create_room(request):
 @login_required
 @permission_required('reservations.view_room', raise_exception=True)
 def room_list(request):
+    """
+    Muestra una lista de todas las habitaciones.
+    Solo accesible por usuarios con permisos de administrador.
+    """
     rooms = Room.objects.all()
     return render(request, 'reservations/room_list.html', {'rooms': rooms})
 
 def signup(request):
+    """
+    Maneja el registro de nuevos usuarios y la creación del perfil de huésped asociado.
+    """
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
-            # Crear un Guest asociado al User
             Guest.objects.create(
                 user=user,
                 first_name=form.cleaned_data.get('first_name'),
@@ -101,15 +134,19 @@ def signup(request):
             password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=password)
             login(request, user)
-            messages.success(request, 'Registration successful.')
+            messages.success(request, _('Registro exitoso.'))
             return redirect('user_dashboard')
         else:
-            messages.error(request, 'Please correct the error below.')
+            messages.error(request, _('Por favor, corrige el error a continuación.'))
     else:
         form = SignUpForm()
     return render(request, 'registration/signup.html', {'form': form})
 
 def login_view(request):
+    """
+    Maneja la autenticación de usuarios.
+    Redirige al tablero de usuario o a la página de inicio dependiendo del rol del usuario.
+    """
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -123,14 +160,17 @@ def login_view(request):
                 else:
                     return redirect('user_dashboard')
             else:
-                messages.error(request, 'Invalid username or password.')
+                messages.error(request, _('Nombre de usuario o contraseña inválidos.'))
         else:
-            messages.error(request, 'Please correct the error below.')
+            messages.error(request, _('Por favor, corrige el error a continuación.'))
     else:
         form = AuthenticationForm()
     return render(request, 'registration/login.html', {'form': form})
 
 @login_required
 def user_dashboard(request):
+    """
+    Muestra el tablero de usuario con una lista de habitaciones disponibles.
+    """
     rooms = Room.objects.filter(available=True)
     return render(request, 'reservations/user_dashboard.html', {'rooms': rooms})

@@ -21,23 +21,23 @@
                         {% if user.is_authenticated %}
                             {% if user.is_staff %}
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'guest_list' %}">Guests</a>
+                                    <a class="nav-link" href="{% url 'guest_list' %}">Huéspedes</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'reservation_list' %}">Reservations</a>
+                                    <a class="nav-link" href="{% url 'reservation_list' %}">Reservas</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'room_list' %}">Rooms</a>
+                                    <a class="nav-link" href="{% url 'room_list' %}">Habitaciones</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'create_room' %}">Create Room</a>
+                                    <a class="nav-link" href="{% url 'create_room' %}">Crear Habitación</a>
                                 </li>
                             {% else %}
                                 <li class="nav-item">
                                     <a class="nav-link" href="{% url 'user_dashboard' %}">Dashboard</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'user_reservations' %}">My Reservations</a>
+                                    <a class="nav-link" href="{% url 'user_reservations' %}">Mis Reservas</a>
                                 </li>
                             {% endif %}
                         {% endif %}

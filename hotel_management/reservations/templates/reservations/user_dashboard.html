@@ -3,12 +3,12 @@
 {% block title %}User Dashboard{% endblock %}
 
 {% block content %}
-  <h1>Welcome {{ user.username }}</h1>
-  <h2>Available Rooms</h2>
+  <h1>Bienvenido {{ user.username }}</h1>
+  <h2>Habitaciones disponibles</h2>
   <form method="post" action="{% url 'create_reservation' %}">
     {% csrf_token %}
     <div class="form-group">
-      <label for="room">Room:</label>
+      <label for="room">Habitación:</label>
       <select name="room" id="room" class="form-control">
         {% for room in rooms %}
           <option value="{{ room.id }}">{{ room.room_number }} - {{ room.room_type }}</option>
@@ -16,13 +16,13 @@
       </select>
     </div>
     <div class="form-group">
-      <label for="check_in_date">Check-in Date:</label>
+      <label for="check_in_date">Inicio Reserva:</label>
       <input type="date" name="check_in_date" id="check_in_date" class="form-control">
     </div>
     <div class="form-group">
-      <label for="check_out_date">Check-out Date:</label>
+      <label for="check_out_date">Fin Reserva:</label>
       <input type="date" name="check_out_date" id="check_out_date" class="form-control">
     </div>
-    <button type="submit" class="btn btn-primary">Request Reservation</button>
+    <button type="submit" class="btn btn-primary">Reservar</button>
   </form>
 {% endblock %}
