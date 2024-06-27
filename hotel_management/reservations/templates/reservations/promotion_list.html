@@ -1,0 +1,28 @@
+{% extends "reservations/base_generic.html" %}
+
+{% block content %}
+  <h1>Lista de Promociones</h1>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Descripción</th>
+        <th>Descuento (%)</th>
+        <th>Fecha de Inicio</th>
+        <th>Fecha de Fin</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for promotion in promotions %}
+      <tr>
+        <td>{{ promotion.code }}</td>
+        <td>{{ promotion.description }}</td>
+        <td>{{ promotion.discount_percentage }}</td>
+        <td>{{ promotion.start_date }}</td>
+        <td>{{ promotion.end_date }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <a href="{% url 'create_promotion' %}" class="btn btn-primary">Agregar una nueva promoción</a>
+{% endblock %}

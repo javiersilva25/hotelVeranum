@@ -12,7 +12,7 @@
     <div class="page-container">
         <div class="content-wrap">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <a class="navbar-brand" href="{% url 'index' %}">Veranum</a>
+                <a class="navbar-brand" href="{% url 'index' %}">Hotel Management</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -30,11 +30,17 @@
                                     <a class="nav-link" href="{% url 'room_list' %}">Habitaciones</a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'promotion_list' %}">Promociones</a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link" href="{% url 'create_room' %}">Crear Habitación</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'create_promotion' %}">Crear Promoción</a>
                                 </li>
                             {% else %}
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'user_dashboard' %}">Dashboard</a>
+                                    <a class="nav-link" href="{% url 'user_dashboard' %}">Tablero</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="{% url 'user_reservations' %}">Mis Reservas</a>
@@ -47,15 +53,15 @@
                             <li class="nav-item">
                                 <form method="post" action="{% url 'logout' %}">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-link nav-link" style="border:none; background:none;">Logout</button>
+                                    <button type="submit" class="btn btn-link nav-link" style="border:none; background:none;">Cerrar Sesión</button>
                                 </form>
                             </li>
                         {% else %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'login' %}">Login</a>
+                                <a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'signup' %}">Sign Up</a>
+                                <a class="nav-link" href="{% url 'signup' %}">Registrarse</a>
                             </li>
                         {% endif %}
                     </ul>
@@ -85,7 +91,7 @@
                 <a href="#" class="btn btn-outline-dark btn-floating m-1" role="button"><i class="fab fa-twitter"></i></a>
                 <a href="#" class="btn btn-outline-dark btn-floating m-1" role="button"><i class="fab fa-instagram"></i></a>
                 <a href="#" class="btn btn-outline-dark btn-floating m-1" role="button"><i class="fab fa-linkedin-in"></i></a>
-                <p class="mt-3">&copy; 2024 Veranum. Todos los derechos reservados.</p>
+                <p class="mt-3">&copy; 2024 Your Company. Todos los derechos reservados.</p>
             </div>
         </footer>
     </div>

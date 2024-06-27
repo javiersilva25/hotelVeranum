@@ -1,11 +1,12 @@
+from datetime import date
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
 from django.utils.translation import gettext as _
-from .models import Guest, Reservation, Room
-from .forms import GuestForm, ReservationForm, RoomForm, SignUpForm
+from .models import Guest, Reservation, Room, Promotion
+from .forms import GuestForm, ReservationForm, RoomForm, SignUpForm, PromotionForm
 
 def index(request):
     """
@@ -43,31 +44,6 @@ def guest_list(request):
     return render(request, 'reservations/guest_list.html', {'guests': guests})
 
 @login_required
-def create_reservation(request):
-    """
-    Maneja la creación de una nueva reserva.
-    Asigna el usuario actual como el huésped asociado a la reserva.
-    """
-    if request.method == 'POST':
-        form = ReservationForm(request.POST)
-        if form.is_valid():
-            reservation = form.save(commit=False)
-            if not hasattr(request.user, 'guest'):
-                messages.error(request, _('Primero necesitas crear un perfil de huésped.'))
-                return redirect('create_guest')
-            reservation.guest = request.user.guest  # Asignar el usuario actual como invitado
-            room_id = request.POST.get('room')  # Obtener el ID de la habitación seleccionada
-            reservation.room = get_object_or_404(Room, id=room_id)  # Asignar la habitación correcta
-            reservation.save()
-            messages.success(request, _('Reserva creada con éxito.'))
-            return redirect('user_dashboard')
-        else:
-            messages.error(request, _('Por favor, corrige el error a continuación.'))
-    else:
-        form = ReservationForm()
-    return render(request, 'reservations/reservation_form.html', {'form': form})
-
-@login_required
 @permission_required('reservations.view_reservation', raise_exception=True)
 def reservation_list(request):
     """
@@ -76,14 +52,6 @@ def reservation_list(request):
     """
     reservations = Reservation.objects.all()
     return render(request, 'reservations/reservation_list.html', {'reservations': reservations})
-
-@login_required
-def user_reservations(request):
-    """
-    Muestra una lista de reservas del usuario actual.
-    """
-    reservations = Reservation.objects.filter(guest=request.user.guest)
-    return render(request, 'reservations/user_reservations.html', {'reservations': reservations})
 
 @login_required
 @permission_required('reservations.add_room', raise_exception=True)
@@ -113,6 +81,70 @@ def room_list(request):
     """
     rooms = Room.objects.all()
     return render(request, 'reservations/room_list.html', {'rooms': rooms})
+
+@login_required
+def create_reservation(request):
+    """
+    Maneja la creación de una nueva reserva.
+    Asigna el usuario actual como el huésped asociado a la reserva.
+    """
+    if request.method == 'POST':
+        form = ReservationForm(request.POST)
+        if form.is_valid():
+            reservation = form.save(commit=False)
+            if not hasattr(request.user, 'guest'):
+                messages.error(request, _('Primero necesitas crear un perfil de huésped.'))
+                return redirect('create_guest')
+            reservation.guest = request.user.guest  # Asignar el usuario actual como invitado
+            room_id = request.POST.get('room')  # Obtener el ID de la habitación seleccionada
+            reservation.room = get_object_or_404(Room, id=room_id)  # Asignar la habitación correcta
+            reservation.save()
+            messages.success(request, _('Reserva creada con éxito.'))
+            return redirect('user_dashboard')
+        else:
+            messages.error(request, _('Por favor, corrige el error a continuación.'))
+    else:
+        promotions = Promotion.objects.filter(start_date__lte=date.today(), end_date__gte=date.today())
+        form = ReservationForm()
+        form.fields['promotion'].queryset = promotions
+    return render(request, 'reservations/reservation_form.html', {'form': form})
+
+@login_required
+def user_reservations(request):
+    """
+    Muestra una lista de reservas del usuario actual.
+    """
+    reservations = Reservation.objects.filter(guest=request.user.guest)
+    return render(request, 'reservations/user_reservations.html', {'reservations': reservations})
+
+@login_required
+@permission_required('reservations.add_promotion', raise_exception=True)
+def create_promotion(request):
+    """
+    Maneja la creación de una nueva promoción.
+    Solo accesible por usuarios con permisos de administrador.
+    """
+    if request.method == 'POST':
+        form = PromotionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Promoción creada con éxito.')
+            return redirect('promotion_list')
+        else:
+            messages.error(request, 'Por favor, corrige el error a continuación.')
+    else:
+        form = PromotionForm()
+    return render(request, 'reservations/promotion_form.html', {'form': form})
+
+@login_required
+@permission_required('reservations.view_promotion', raise_exception=True)
+def promotion_list(request):
+    """
+    Muestra una lista de todas las promociones.
+    Solo accesible por usuarios con permisos de administrador.
+    """
+    promotions = Promotion.objects.all()
+    return render(request, 'reservations/promotion_list.html', {'promotions': promotions})
 
 def signup(request):
     """
@@ -173,4 +205,6 @@ def user_dashboard(request):
     Muestra el tablero de usuario con una lista de habitaciones disponibles.
     """
     rooms = Room.objects.filter(available=True)
-    return render(request, 'reservations/user_dashboard.html', {'rooms': rooms})
+    promotions = Promotion.objects.filter(start_date__lte=date.today(), end_date__gte=date.today())
+    today = date.today()
+    return render(request, 'reservations/user_dashboard.html', {'rooms': rooms, 'promotions': promotions, 'today': today})

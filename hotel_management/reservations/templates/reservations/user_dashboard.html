@@ -1,28 +1,44 @@
 {% extends "reservations/base_generic.html" %}
 
-{% block title %}User Dashboard{% endblock %}
+{% block title %}Tablero de Usuario{% endblock %}
 
 {% block content %}
   <h1>Bienvenido {{ user.username }}</h1>
-  <h2>Habitaciones disponibles</h2>
+  <h2>Habitaciones Disponibles</h2>
   <form method="post" action="{% url 'create_reservation' %}">
     {% csrf_token %}
     <div class="form-group">
       <label for="room">Habitación:</label>
       <select name="room" id="room" class="form-control">
         {% for room in rooms %}
-          <option value="{{ room.id }}">{{ room.room_number }} - {{ room.room_type }}</option>
+          <option value="{{ room.id }}">
+            {{ room.room_number }} - {{ room.room_type }} - 
+            {% if room.promotion and room.promotion.start_date <= today and room.promotion.end_date >= today %}
+              Precio: {{ room.get_discounted_price }} ({{ room.promotion.discount_percentage }}% de descuento)
+            {% else %}
+              Precio: {{ room.price_per_night }}
+            {% endif %}
+          </option>
         {% endfor %}
       </select>
     </div>
     <div class="form-group">
-      <label for="check_in_date">Inicio Reserva:</label>
+      <label for="check_in_date">Fecha de Entrada:</label>
       <input type="date" name="check_in_date" id="check_in_date" class="form-control">
     </div>
     <div class="form-group">
-      <label for="check_out_date">Fin Reserva:</label>
+      <label for="check_out_date">Fecha de Salida:</label>
       <input type="date" name="check_out_date" id="check_out_date" class="form-control">
     </div>
-    <button type="submit" class="btn btn-primary">Reservar</button>
+    <div class="form-group">
+      <label for="promotion">Promoción:</label>
+      <select name="promotion" id="promotion" class="form-control">
+        <option value="" selected>No aplicar promoción</option>
+        {% for promotion in promotions %}
+          <option value="{{ promotion.id }}">{{ promotion.code }} - {{ promotion.discount_percentage }}% de descuento</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Solicitar Reservación</button>
   </form>
 {% endblock %}
