@@ -104,9 +104,9 @@ def create_reservation(request):
         else:
             messages.error(request, _('Por favor, corrige el error a continuación.'))
     else:
-        promotions = Promotion.objects.filter(start_date__lte=date.today(), end_date__gte=date.today())
+        promotions = Promotion.objects.all()  # Obtener todas las promociones sin filtrar por fecha
         form = ReservationForm()
-        form.fields['promotion'].queryset = promotions
+        form.fields['promotion'].queryset = promotions  # Asegúrate de que el queryset de promociones esté completo
     return render(request, 'reservations/reservation_form.html', {'form': form})
 
 @login_required
@@ -205,6 +205,6 @@ def user_dashboard(request):
     Muestra el tablero de usuario con una lista de habitaciones disponibles.
     """
     rooms = Room.objects.filter(available=True)
-    promotions = Promotion.objects.filter(start_date__lte=date.today(), end_date__gte=date.today())
+    promotions = Promotion.objects.all()
     today = date.today()
     return render(request, 'reservations/user_dashboard.html', {'rooms': rooms, 'promotions': promotions, 'today': today})

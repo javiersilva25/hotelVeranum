@@ -58,6 +58,25 @@ class RoomForm(forms.ModelForm):
             'available': 'Disponible',
         }
 
+class PromotionForm(forms.ModelForm):
+    class Meta:
+        model = Promotion
+        fields = ['code', 'description', 'discount_percentage', 'start_date', 'end_date']
+        widgets = {
+            'code': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'discount_percentage': forms.NumberInput(attrs={'class': 'form-control'}),
+            'start_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+        }
+        labels = {
+            'code': 'Código',
+            'description': 'Descripción',
+            'discount_percentage': 'Porcentaje de Descuento',
+            'start_date': 'Fecha de Inicio',
+            'end_date': 'Fecha de Fin',
+        }
+
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(max_length=254, help_text='Obligatorio. Introduce una dirección de correo válida.', widget=forms.EmailInput(attrs={'class': 'form-control'}))
     first_name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -86,22 +105,3 @@ class SignUpForm(UserCreationForm):
 class LoginForm(AuthenticationForm):
     username = forms.CharField(max_length=254, widget=forms.TextInput(attrs={'autofocus': True, 'class': 'form-control'}))
     password = forms.CharField(label="Contraseña", strip=False, widget=forms.PasswordInput(attrs={'autocomplete': 'current-password', 'class': 'form-control'}))
-
-class PromotionForm(forms.ModelForm):
-    class Meta:
-        model = Promotion
-        fields = ['code', 'description', 'discount_percentage', 'start_date', 'end_date']
-        widgets = {
-            'code': forms.TextInput(attrs={'class': 'form-control'}),
-            'description': forms.Textarea(attrs={'class': 'form-control'}),
-            'discount_percentage': forms.NumberInput(attrs={'class': 'form-control'}),
-            'start_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'end_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-        }
-        labels = {
-            'code': 'Código',
-            'description': 'Descripción',
-            'discount_percentage': 'Porcentaje de Descuento',
-            'start_date': 'Fecha de Inicio',
-            'end_date': 'Fecha de Fin',
-        }
