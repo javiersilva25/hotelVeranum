@@ -35,7 +35,7 @@
       <select name="promotion" id="promotion" class="form-control">
         <option value="" selected>No aplicar promoción</option>
         {% for promotion in promotions %}
-          <option value="{{ promotion.id }}">{{ promotion.code }} - {{ promotion.discount_percentage }}% de descuento</option>
+          <option value="{{ promotion.id }}">{{promotion.description}}</option>
         {% endfor %}
       </select>
     </div>
