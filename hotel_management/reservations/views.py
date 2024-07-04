@@ -95,18 +95,34 @@ def create_reservation(request):
             if not hasattr(request.user, 'guest'):
                 messages.error(request, _('Primero necesitas crear un perfil de huésped.'))
                 return redirect('create_guest')
-            reservation.guest = request.user.guest  # Asignar el usuario actual como invitado
-            room_id = request.POST.get('room')  # Obtener el ID de la habitación seleccionada
-            reservation.room = get_object_or_404(Room, id=room_id)  # Asignar la habitación correcta
+            
+            guest = request.user.guest
+            reservation.guest = guest 
+            room_id = request.POST.get('room') 
+            reservation.room = get_object_or_404(Room, id=room_id)  
+            
+          
+            if not guest.has_used_promotion:
+                promotion_id = request.POST.get('promotion')
+                if promotion_id:
+                    reservation.promotion = get_object_or_404(Promotion, id=promotion_id)
+                    guest.has_used_promotion = True 
+                    guest.save()
+                else:
+                    messages.error(request, _('Debes seleccionar una promoción para tu primera reserva.'))
+                    return redirect('user_dashboard')
+            else:
+                reservation.promotion = None
+            
             reservation.save()
             messages.success(request, _('Reserva creada con éxito.'))
             return redirect('user_dashboard')
         else:
             messages.error(request, _('Por favor, corrige el error a continuación.'))
     else:
-        promotions = Promotion.objects.all()  # Obtener todas las promociones sin filtrar por fecha
+        promotions = Promotion.objects.all()
         form = ReservationForm()
-        form.fields['promotion'].queryset = promotions  # Asegúrate de que el queryset de promociones esté completo
+        form.fields['promotion'].queryset = promotions
     return render(request, 'reservations/reservation_form.html', {'form': form})
 
 @login_required

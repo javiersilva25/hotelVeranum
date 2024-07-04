@@ -35,9 +35,11 @@ class Guest(models.Model):
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=15, unique=True)
     address = models.TextField(blank=True)
+    has_used_promotion = models.BooleanField(default=False)  # Nuevo campo
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
+
 
 class Reservation(models.Model):
     guest = models.ForeignKey(Guest, on_delete=models.CASCADE)
